@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AttendPro is a local daily attendance dashboard with check-in, check-out, reports, calendar, and salary estimates." />
+  <meta name="theme-color" content="#081114" />
+  <title>AttendPro - Daily Attendance Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <svg class="svg-sprite" aria-hidden="true">
+    <symbol id="icon-menu" viewBox="0 0 24 24">
+      <path d="M4 6h16M4 12h16M4 18h16" />
+    </symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24">
+      <path d="M6 6l12 12M18 6L6 18" />
+    </symbol>
+    <symbol id="icon-dashboard" viewBox="0 0 24 24">
+      <path d="M4 13h6v7H4zM14 4h6v16h-6zM4 4h6v5H4z" />
+    </symbol>
+    <symbol id="icon-clock" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 7v5l4 2" />
+    </symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24">
+      <path d="M5 5h14v15H5zM8 3v4M16 3v4M5 10h14" />
+    </symbol>
+    <symbol id="icon-table" viewBox="0 0 24 24">
+      <path d="M4 5h16v14H4zM4 10h16M4 15h16M10 5v14M16 5v14" />
+    </symbol>
+    <symbol id="icon-user" viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21c1.5-4.5 14.5-4.5 16 0" />
+    </symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24">
+      <path d="M5 12.5l4 4L19 6" />
+    </symbol>
+    <symbol id="icon-login" viewBox="0 0 24 24">
+      <path d="M4 12h12M12 8l4 4-4 4M20 5v14" />
+    </symbol>
+    <symbol id="icon-logout" viewBox="0 0 24 24">
+      <path d="M20 12H8M12 8l-4 4 4 4M4 5v14" />
+    </symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24">
+      <circle cx="10.5" cy="10.5" r="6.5" />
+      <path d="M16 16l4 4" />
+    </symbol>
+    <symbol id="icon-download" viewBox="0 0 24 24">
+      <path d="M12 4v10M8 10l4 4 4-4M5 20h14" />
+    </symbol>
+    <symbol id="icon-file" viewBox="0 0 24 24">
+      <path d="M6 3h9l3 3v15H6zM15 3v4h4M8 12h8M8 16h8" />
+    </symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" />
+    </symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24">
+      <path d="M19 15.5A7.5 7.5 0 0 1 8.5 5 8 8 0 1 0 19 15.5z" />
+    </symbol>
+    <symbol id="icon-wallet" viewBox="0 0 24 24">
+      <path d="M4 7h16v13H4zM4 7l3-3h11v3M16 13h4" />
+    </symbol>
+    <symbol id="icon-percent" viewBox="0 0 24 24">
+      <path d="M6 18L18 6" />
+      <circle cx="7" cy="7" r="2" />
+      <circle cx="17" cy="17" r="2" />
+    </symbol>
+  </svg>
+
+  <!-- Loading state -->
+  <div class="loader" id="loader" aria-label="Loading application">
+    <div class="loader-card">
+      <div class="loader-mark">A</div>
+      <div class="loader-title">AttendPro</div>
+      <div class="loader-track">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application shell -->
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-row">
+        <a class="brand" href="#dashboard" aria-label="AttendPro dashboard">
+          <span class="brand-mark">A</span>
+          <span>
+            <strong>AttendPro</strong>
+            <small>Daily workforce log</small>
+          </span>
+        </a>
+        <button class="icon-button sidebar-close" id="sidebarClose" type="button" aria-label="Close sidebar">
+          <svg class="icon"><use href="#icon-close"></use></svg>
+        </button>
+      </div>
+
+      <nav class="side-nav" aria-label="Main navigation">
+        <a class="nav-link active" href="#dashboard" data-title="Dashboard">
+          <svg class="icon"><use href="#icon-dashboard"></use></svg>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-link" href="#attendance" data-title="Daily Attendance">
+          <svg class="icon"><use href="#icon-clock"></use></svg>
+          <span>Attendance</span>
+        </a>
+        <a class="nav-link" href="#history" data-title="Attendance History">
+          <svg class="icon"><use href="#icon-table"></use></svg>
+          <span>History</span>
+        </a>
+        <a class="nav-link" href="#calendar" data-title="Calendar View">
+          <svg class="icon"><use href="#icon-calendar"></use></svg>
+          <span>Calendar</span>
+        </a>
+        <a class="nav-link" href="#profile" data-title="Employees">
+          <svg class="icon"><use href="#icon-user"></use></svg>
+          <span>Employees</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span id="sidebarDate">Today</span>
+        <strong id="sidebarStatus">Ready</strong>
+      </div>
+    </aside>
+
+    <div class="sidebar-scrim" id="sidebarScrim"></div>
+
+    <div class="main-panel">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-button menu-button" id="menuButton" type="button" aria-label="Open sidebar">
+            <svg class="icon"><use href="#icon-menu"></use></svg>
+          </button>
+          <div>
+            <p class="eyebrow">Employee attendance</p>
+            <h1 id="pageTitle">Dashboard</h1>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <label class="employee-switcher">
+            <span>Employee</span>
+            <select id="activeEmployeeSelect" aria-label="Select active employee"></select>
+          </label>
+          <div class="digital-clock" aria-live="polite">
+            <svg class="icon"><use href="#icon-clock"></use></svg>
+            <span id="liveClock">00:00:00</span>
+          </div>
+          <button class="icon-button theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
+            <svg class="icon theme-moon"><use href="#icon-moon"></use></svg>
+            <svg class="icon theme-sun"><use href="#icon-sun"></use></svg>
+          </button>
+          <a class="avatar-link" href="#profile" aria-label="Open profile">
+            <span class="avatar" id="topAvatar">A</span>
+          </a>
+        </div>
+      </header>
+
+      <main class="content">
+        <!-- Dashboard -->
+        <section class="view-section" id="dashboard">
+          <div class="hero-panel reveal">
+            <div class="hero-copy">
+              <p class="eyebrow">Live monthly summary</p>
+              <h2>Welcome back, <span id="heroName">Employee</span></h2>
+              <p id="heroLine">Your attendance workspace is synced locally and ready for today.</p>
+              <div class="hero-actions">
+                <button class="btn btn-primary check-in-action" type="button">
+                  <svg class="icon"><use href="#icon-login"></use></svg>
+                  Check In
+                </button>
+                <button class="btn btn-secondary check-out-action" type="button">
+                  <svg class="icon"><use href="#icon-logout"></use></svg>
+                  Check Out
+                </button>
+              </div>
+
+              <div class="hero-insights">
+                <div class="insight-chip">
+                  <span>Current streak</span>
+                  <strong id="currentStreak">0 days</strong>
+                </div>
+                <div class="insight-chip">
+                  <span>Best streak</span>
+                  <strong id="bestStreak">0 days</strong>
+                </div>
+                <div class="insight-chip">
+                  <span>Off balance</span>
+                  <strong id="remainingOffs">4 left</strong>
+                </div>
+              </div>
+            </div>
+            <div class="hero-profile" aria-label="Employee profile summary">
+              <span class="avatar avatar-large" id="heroAvatar">A</span>
+              <div>
+                <strong id="heroRole">Operations Executive</strong>
+                <span id="heroDepartment">People Operations</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="metrics-grid" aria-label="Attendance dashboard cards">
+            <article class="metric-card reveal">
+              <span class="metric-icon present">
+                <svg class="icon"><use href="#icon-check"></use></svg>
+              </span>
+              <span class="metric-label">Worked Days</span>
+              <strong id="presentDays">0</strong>
+              <small id="presentMeta">This month</small>
+            </article>
+
+            <article class="metric-card reveal">
+              <span class="metric-icon absent">
+                <svg class="icon"><use href="#icon-close"></use></svg>
+              </span>
+              <span class="metric-label">Total Absent Days</span>
+              <strong id="absentDays">0</strong>
+              <small id="absentMeta">Working days only</small>
+            </article>
+
+            <article class="metric-card reveal">
+              <span class="metric-icon percent">
+                <svg class="icon"><use href="#icon-percent"></use></svg>
+              </span>
+              <span class="metric-label">Attendance Percentage</span>
+              <strong id="attendancePercentage">0%</strong>
+              <small id="percentageMeta">Against elapsed workdays</small>
+            </article>
+
+            <article class="metric-card reveal">
+              <span class="metric-icon salary">
+                <svg class="icon"><use href="#icon-wallet"></use></svg>
+              </span>
+              <span class="metric-label">Salary Estimate</span>
+              <strong id="salaryEstimate">0</strong>
+              <small id="salaryMeta">Based on present days</small>
+            </article>
+
+            <article class="metric-card reveal">
+              <span class="metric-icon weekend">
+                <svg class="icon"><use href="#icon-calendar"></use></svg>
+              </span>
+              <span class="metric-label">Weekend Off Counter</span>
+              <strong id="weekendCount">0</strong>
+              <small id="weekendMeta">Max 4 per month</small>
+            </article>
+
+            <article class="metric-card reveal">
+              <span class="metric-icon team">
+                <svg class="icon"><use href="#icon-user"></use></svg>
+              </span>
+              <span class="metric-label">Total Employees</span>
+              <strong id="totalEmployees">1</strong>
+              <small id="employeeMeta">Employee list</small>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="panel reveal" id="attendance">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Daily punch</p>
+                  <h3>Attendance Form</h3>
+                </div>
+                <span class="status-pill" id="todayStatusPill">Not marked</span>
+              </div>
+
+              <div class="today-strip">
+                <div>
+                  <span>Date</span>
+                  <strong id="todayDate">-</strong>
+                </div>
+                <div>
+                  <span>Day</span>
+                  <strong id="todayDay">-</strong>
+                </div>
+                <div>
+                  <span>Time</span>
+                  <strong id="todayTime">-</strong>
+                </div>
+              </div>
+
+              <div class="attendance-actions">
+                <button class="punch-card check-in-action" type="button">
+                  <svg class="icon"><use href="#icon-login"></use></svg>
+                  <span>Daily check-in</span>
+                  <strong id="checkInTime">--:--</strong>
+                </button>
+                <button class="punch-card check-out-action" type="button">
+                  <svg class="icon"><use href="#icon-logout"></use></svg>
+                  <span>Daily check-out</span>
+                  <strong id="checkOutTime">--:--</strong>
+                </button>
+              </div>
+
+              <div class="work-summary">
+                <div>
+                  <span>Status</span>
+                  <strong id="todayStatus">Absent</strong>
+                </div>
+                <div>
+                  <span>Total hours</span>
+                  <strong id="todayHours">0h 00m</strong>
+                </div>
+                <div>
+                  <span>Target</span>
+                  <strong id="targetHours">8h</strong>
+                </div>
+              </div>
+            </article>
+
+            <article class="panel reveal">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Monthly attendance summary</p>
+                  <h3 id="summaryTitle">Current Month</h3>
+                </div>
+                <div class="mini-ring" id="summaryRing">0%</div>
+              </div>
+
+              <div class="summary-list">
+                <div>
+                  <span>Working days elapsed</span>
+                  <strong id="workingDaysElapsed">0</strong>
+                </div>
+                <div>
+                  <span>Total logged hours</span>
+                  <strong id="loggedHours">0h 00m</strong>
+                </div>
+                <div>
+                  <span>Average daily hours</span>
+                  <strong id="averageHours">0h 00m</strong>
+                </div>
+                <div>
+                  <span>Completed shifts</span>
+                  <strong id="completionRate">0%</strong>
+                </div>
+                <div>
+                  <span>Manual edits</span>
+                  <strong id="manualEdits">0</strong>
+                </div>
+                <div>
+                  <span>Selected month</span>
+                  <strong id="selectedMonthLabel">-</strong>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- Attendance history -->
+        <section class="view-section" id="history">
+          <div class="panel reveal">
+            <div class="panel-heading history-heading">
+              <div>
+                <p class="eyebrow">Attendance history table</p>
+                <h3>Daily Records</h3>
+              </div>
+
+              <div class="toolbar">
+                <label class="field compact">
+                  <span>Month</span>
+                  <input type="month" id="monthFilter" />
+                </label>
+                <label class="field compact">
+                  <span>Status</span>
+                  <select id="statusFilter">
+                    <option value="All">All</option>
+                    <option value="Present">Present</option>
+                    <option value="Absent">Absent</option>
+                    <option value="Weekend">Weekend Off</option>
+                    <option value="Upcoming">Upcoming</option>
+                  </select>
+                </label>
+                <label class="field compact search-field">
+                  <span>Search date</span>
+                  <svg class="icon"><use href="#icon-search"></use></svg>
+                  <input type="date" id="dateSearch" />
+                </label>
+                <button class="icon-button" id="clearSearch" type="button" aria-label="Clear search">
+                  <svg class="icon"><use href="#icon-close"></use></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="export-row">
+              <button class="btn btn-secondary" id="exportAllCsv" type="button">
+                <svg class="icon"><use href="#icon-download"></use></svg>
+                All Employees CSV
+              </button>
+              <button class="btn btn-secondary" id="downloadCsv" type="button">
+                <svg class="icon"><use href="#icon-download"></use></svg>
+                Download CSV
+              </button>
+              <button class="btn btn-primary" id="exportPdf" type="button">
+                <svg class="icon"><use href="#icon-file"></use></svg>
+                Export PDF
+              </button>
+            </div>
+
+            <div class="table-wrap">
+              <table class="attendance-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Day</th>
+                    <th>Status</th>
+                    <th>Check-in time</th>
+                    <th>Check-out time</th>
+                    <th>Total hours</th>
+                    <th>Note</th>
+                  </tr>
+                </thead>
+                <tbody id="attendanceTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Calendar -->
+        <section class="view-section" id="calendar">
+          <div class="panel reveal">
+            <div class="panel-heading calendar-heading">
+              <div>
+                <p class="eyebrow">Calendar view</p>
+                <h3 id="calendarTitle">Attendance Calendar</h3>
+              </div>
+
+              <div class="calendar-controls">
+                <button class="icon-button" id="prevMonth" type="button" aria-label="Previous month">
+                  <span aria-hidden="true">&lt;</span>
+                </button>
+                <button class="btn btn-secondary" id="currentMonth" type="button">Current Month</button>
+                <button class="icon-button" id="nextMonth" type="button" aria-label="Next month">
+                  <span aria-hidden="true">&gt;</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="legend">
+              <span><i class="dot present"></i>Green = Present</span>
+              <span><i class="dot absent"></i>Red = Absent</span>
+              <span><i class="dot weekend"></i>Blue = Weekend Off</span>
+              <span><i class="dot upcoming"></i>Gray = Upcoming</span>
+            </div>
+
+            <div class="calendar-policy">
+              <div>
+                <strong id="offUsage">0/4 off used</strong>
+                <span>Click any date to edit status. Weekend Off can be taken on any day, max 4 per month.</span>
+              </div>
+              <span class="status-pill weekend">Monthly off limit: 4</span>
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid" aria-label="Monthly attendance calendar"></div>
+          </div>
+        </section>
+
+        <!-- Employees -->
+        <section class="view-section" id="profile">
+          <div class="profile-grid">
+            <article class="profile-card reveal">
+              <span class="avatar avatar-xl" id="profileAvatar">A</span>
+              <h3 id="profileNameDisplay">Employee Name</h3>
+              <p id="profileRoleDisplay">Role</p>
+              <div class="profile-facts">
+                <div>
+                  <span>Employee ID</span>
+                  <strong id="profileIdDisplay">EMP-0001</strong>
+                </div>
+                <div>
+                  <span>Department</span>
+                  <strong id="profileDeptDisplay">People Operations</strong>
+                </div>
+                <div>
+                  <span>Job time</span>
+                  <strong id="profileJobTimeDisplay">09:00 - 18:00</strong>
+                </div>
+                <div>
+                  <span>Worked days</span>
+                  <strong id="profileWorkedDays">0</strong>
+                </div>
+                <div>
+                  <span>Attendance</span>
+                  <strong id="profileAttendanceDisplay">0%</strong>
+                </div>
+              </div>
+            </article>
+
+            <article class="panel reveal">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Add employee</p>
+                  <h3>Employee Management</h3>
+                </div>
+              </div>
+
+              <form class="profile-form" id="employeeForm">
+                <label class="field">
+                  <span>Employee name</span>
+                  <input type="text" id="employeeName" autocomplete="name" required />
+                </label>
+                <label class="field">
+                  <span>Employee ID</span>
+                  <input type="text" id="employeeCode" required />
+                </label>
+                <label class="field">
+                  <span>Role</span>
+                  <input type="text" id="employeeRole" />
+                </label>
+                <label class="field">
+                  <span>Department</span>
+                  <input type="text" id="employeeDepartment" />
+                </label>
+                <label class="field">
+                  <span>Location</span>
+                  <input type="text" id="employeeLocation" />
+                </label>
+                <label class="field">
+                  <span>Monthly salary</span>
+                  <input type="number" id="employeeSalary" min="0" step="500" />
+                </label>
+                <label class="field">
+                  <span>Job start time</span>
+                  <input type="time" id="employeeShiftStart" />
+                </label>
+                <label class="field">
+                  <span>Job end time</span>
+                  <input type="time" id="employeeShiftEnd" />
+                </label>
+                <label class="field">
+                  <span>Target hours per day</span>
+                  <input type="number" id="employeeTargetHours" min="1" max="16" step="0.5" />
+                </label>
+                <button class="btn btn-primary form-submit" type="submit">
+                  <svg class="icon"><use href="#icon-check"></use></svg>
+                  <span id="employeeSubmitText">Add Employee</span>
+                </button>
+                <button class="btn btn-secondary form-reset" id="resetEmployeeForm" type="button">
+                  Reset Form
+                </button>
+              </form>
+            </article>
+          </div>
+
+          <article class="panel employee-roster-panel reveal">
+            <div class="panel-heading history-heading">
+              <div>
+                <p class="eyebrow">Employee list</p>
+                <h3>Worked Days Summary</h3>
+              </div>
+            </div>
+
+            <div class="table-wrap employee-table-wrap">
+              <table class="attendance-table employee-table">
+                <thead>
+                  <tr>
+                    <th>Employee</th>
+                    <th>Employee ID</th>
+                    <th>Job time</th>
+                    <th>Worked days</th>
+                    <th>Total hours</th>
+                    <th>Avg/day</th>
+                    <th>Attendance</th>
+                    <th>Off left</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="employeeTableBody"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="editDateModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="editDateTitle">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Edit attendance</p>
+          <h3 id="editDateTitle">Select Date</h3>
+          <span id="editDateSubtitle">Choose attendance status</span>
+        </div>
+        <button class="icon-button" id="closeEditModal" type="button" aria-label="Close editor">
+          <svg class="icon"><use href="#icon-close"></use></svg>
+        </button>
+      </div>
+
+      <form class="attendance-editor" id="attendanceEditForm">
+        <input type="hidden" id="editDateKey" />
+        <input type="hidden" id="editStatus" value="Present" />
+
+        <div class="status-choice-grid" role="group" aria-label="Attendance status">
+          <button class="status-choice present active" type="button" data-edit-status="Present">
+            <svg class="icon"><use href="#icon-check"></use></svg>
+            <span>Present</span>
+          </button>
+          <button class="status-choice absent" type="button" data-edit-status="Absent">
+            <svg class="icon"><use href="#icon-close"></use></svg>
+            <span>Absent</span>
+          </button>
+          <button class="status-choice weekend" type="button" data-edit-status="Weekend">
+            <svg class="icon"><use href="#icon-calendar"></use></svg>
+            <span>Weekend Off</span>
+          </button>
+        </div>
+
+        <div class="editor-time-grid" id="editorTimeGrid">
+          <label class="field">
+            <span>Check-in time</span>
+            <input type="time" id="editCheckIn" />
+          </label>
+          <label class="field">
+            <span>Check-out time</span>
+            <input type="time" id="editCheckOut" />
+          </label>
+          <label class="field">
+            <span>Worked hours</span>
+            <input type="number" id="editWorkedHours" min="0" max="24" step="1" />
+          </label>
+          <label class="field">
+            <span>Worked minutes</span>
+            <input type="number" id="editWorkedMinutes" min="0" max="59" step="1" />
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Note</span>
+          <textarea id="editNote" rows="3" placeholder="Optional reason or remark"></textarea>
+        </label>
+
+        <div class="editor-summary">
+          <div>
+            <span>Total hours</span>
+            <strong id="editHoursPreview">0h 00m</strong>
+          </div>
+          <div>
+            <span>Weekend off usage</span>
+            <strong id="editOffUsage">0/4</strong>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="clearDateRecord" type="button">Reset Auto</button>
+          <button class="btn btn-primary" type="submit">
+            <svg class="icon"><use href="#icon-check"></use></svg>
+            Save Date
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-label="Notifications"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
